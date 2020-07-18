@@ -1,0 +1,44 @@
+version: '3'
+services:
+  api:
+    build: ./api
+    ports: 
+      - 3000:3000
+    networks: 
+    - mynetwork
+    environment: 
+    - DB_URL=mongodb://productListUser:productListPassword@mongodb:27017/promotions?authSource=admin
+    depends_on: 
+      - mongo_import
+
+  web:
+    build: ./web
+    ports: 
+      - 8000:80
+    networks: 
+    - mynetwork
+    depends_on: 
+      - api
+
+  mongodb:
+    image: mongo:3.6.8
+    ports:
+      - 27017:27017
+    networks: 
+    - mynetwork
+    environment: 
+    - MONGO_INITDB_ROOT_USERNAME=productListUser
+    - MONGO_INITDB_ROOT_PASSWORD=productListPassword
+
+  mongo_import:
+    depends_on: 
+    - mongodb
+    image: mongo:3.6.8
+    volumes:
+      - ./database:/database
+    command:
+    - /database/import.sh mongodb
+    networks: 
+    - mynetwork
+networks: 
+    mynetwork: {}

@@ -1,4 +1,4 @@
-FROM node:13.12.0-alpine3.10 as builder
+FROM node:lts-slim as builder
 WORKDIR /opt/ng
 COPY . ./
 RUN npm install
